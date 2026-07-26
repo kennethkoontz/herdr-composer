@@ -1,0 +1,33 @@
+{
+  "project_roots": ["~/workspace"],
+  "ignore_dir_names": ["archived", "node_modules", ".git", "worktrees"],
+  "harnesses": ["pi", "claude", "codex", "grok"],
+  "defaults": {
+    "harness": "pi",
+    "model": {
+      "pi": "google/gemini-3.1-pro-preview",
+      "claude": "opus",
+      "codex": "gpt-5.4",
+      "grok": "grok-4.5"
+    },
+    "effort": {
+      "pi": "high",
+      "claude": "high",
+      "codex": "high",
+      "grok": "high"
+    },
+    "create_more": false
+  },
+  "models": {
+    "pi": [],
+    "claude": ["opus", "sonnet", "haiku", "fable"],
+    "codex": ["gpt-5.4", "gpt-5.4-mini", "gpt-5.5", "gpt-5.3-codex-spark"],
+    "grok": ["grok-4.5", "grok-4.3", "grok-build-latest"]
+  },
+  "effort": {
+    "pi": ["off", "minimal", "low", "medium", "high", "xhigh", "max"],
+    "claude": ["low", "medium", "high", "xhigh", "max"],
+    "codex": ["low", "medium", "high", "xhigh"],
+    "grok": ["low", "medium", "high", "xhigh"]
+  }
+}

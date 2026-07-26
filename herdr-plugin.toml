@@ -1,0 +1,20 @@
+id = "kennethkoontz.herdr-composer"
+name = "Composer"
+version = "0.1.0"
+min_herdr_version = "0.7.0"
+description = "Conductor-style composer for Herdr: pick space, harness, model, effort, and prompt."
+platforms = ["linux", "macos"]
+
+[[actions]]
+id = "open"
+title = "Open Composer"
+contexts = ["workspace", "tab", "pane"]
+command = ["node", "open.mjs"]
+
+[[panes]]
+id = "composer"
+title = "Compose"
+placement = "popup"
+width = "72%"
+height = "42%"
+command = ["node", "launch.mjs"]
