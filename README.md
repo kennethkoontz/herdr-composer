@@ -49,9 +49,9 @@ Reload config (`prefix+shift+r` or `herdr server reload-config`).
 - **enter** opens a picker, or creates from the prompt/Create chip
 - In pickers: **↑↓** or **ctrl-p** / **ctrl-n** move the selection
 - **←/→** on harness cycles kinds; on the footer moves across chips
-- **s** / **m** / **e** / **h** / **o** open space, model, effort, harness, or
-  toggle create-more (plain letter when focus is off the prompt; **alt/⌥** +
-  letter works from the prompt too)
+- **⌥w** / **⌥m** / **⌥e** / **⌥h** / **⌥o** (alt + letter) open space, model,
+  effort, harness, or toggle create-more from anywhere, including the prompt.
+  Plain **w** / **m** / **e** / **h** / **o** work when focus is off the prompt.
 - type anywhere to edit the prompt
 - **esc** closes
 

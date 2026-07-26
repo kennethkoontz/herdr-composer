@@ -6,16 +6,17 @@ import {
   readFileSync,
   writeFileSync,
 } from "node:fs";
+import net from "node:net";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  closePopup,
   defaultEffort,
   defaultModel,
   effortFor,
   loadConfig,
   modelsFor,
-  workspaceChoices,
+  warmModelCaches,
+  workspaceChoicesAsync,
 } from "./lib/herdr.mjs";
 import { printLine, runComposer } from "./lib/tui.mjs";
 
@@ -25,14 +26,20 @@ const stateDir = process.env.HERDR_PLUGIN_STATE_DIR || "";
 
 async function main() {
   const config = loadConfig(configDir);
-  let spaces = workspaceChoices(config);
+  const harnesses = (config.harnesses || ["pi"]).filter(Boolean);
+
+  // Never block the form on model discovery — pickers start with config/defaults
+  // and pick up full lists once this finishes.
+  void warmModelCaches(config, harnesses).catch(() => {});
+
+  // workspace + pane lists in parallel (was two sequential herdr spawns).
+  let spaces = await workspaceChoicesAsync(config);
   if (!spaces.length) {
     printLine("No spaces found. Add project_roots in plugin config.json");
     await waitEnter();
-    await closePopupAndExit(1);
+    closeAndExit(1);
   }
 
-  const harnesses = (config.harnesses || ["pi"]).filter(Boolean);
   let last = {
     spaceId: spaces.find((s) => s.focused)?.id || spaces[0].id,
     harness: config.defaults?.harness || harnesses[0],
@@ -49,6 +56,7 @@ async function main() {
   if (!harnesses.includes(last.harness)) {
     last.harness = harnesses[0];
   }
+  // defaultModel never spawns CLIs.
   if (!last.model) last.model = defaultModel(config, last.harness);
   if (!last.effort) last.effort = defaultEffort(config, last.harness);
 
@@ -62,7 +70,7 @@ async function main() {
     });
 
     if (!selection) {
-      await closePopupAndExit(0);
+      closeAndExit(0);
     }
 
     last = {
@@ -87,13 +95,11 @@ async function main() {
     }
 
     if (selection.createMore) {
-      spaces = workspaceChoices(config);
-      // Brief beat so the new workspace/tab shows up in the next pick list.
-      await sleep(200);
+      spaces = await workspaceChoicesAsync(config);
       continue;
     }
 
-    await closePopupAndExit(0);
+    closeAndExit(0);
   }
 }
 
@@ -118,13 +124,61 @@ function enqueueLaunch(selection) {
   child.unref();
 }
 
-async function closePopupAndExit(code = 0) {
-  try {
-    await closePopup();
-  } catch {
-    // ignore
+/**
+ * Send popup.close then exit as soon as the write lands (or after a tiny
+ * cap). Awaiting a full close round-trip felt like "spin down"; skipping the
+ * write entirely left the popup stuck when process.exit killed the socket.
+ */
+function closeAndExit(code = 0) {
+  const socketPath = process.env.HERDR_SOCKET_PATH;
+  if (!socketPath) {
+    process.exit(code);
+    return;
   }
-  process.exit(code);
+
+  let exited = false;
+  const exitNow = () => {
+    if (exited) return;
+    exited = true;
+    process.exit(code);
+  };
+
+  // Hard cap so a hung socket never stalls dismiss.
+  const timer = setTimeout(exitNow, 30);
+
+  try {
+    const client = net.createConnection(socketPath);
+    const payload =
+      JSON.stringify({
+        id: "quick-launch:popup-close",
+        method: "popup.close",
+        params: {},
+      }) + "\n";
+
+    client.once("connect", () => {
+      try {
+        client.write(payload, () => {
+          clearTimeout(timer);
+          try {
+            client.destroy();
+          } catch {
+            // ignore
+          }
+          exitNow();
+        });
+      } catch {
+        clearTimeout(timer);
+        exitNow();
+      }
+    });
+    client.once("error", () => {
+      clearTimeout(timer);
+      exitNow();
+    });
+  } catch {
+    clearTimeout(timer);
+    exitNow();
+  }
 }
 
 function readLastState(dir) {
@@ -148,10 +202,6 @@ function writeLastState(dir, state) {
   }
 }
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 function waitEnter() {
   return new Promise((resolve) => {
     if (!process.stdin.isTTY) {
@@ -169,12 +219,7 @@ function waitEnter() {
   });
 }
 
-main().catch(async (error) => {
+main().catch((error) => {
   console.error(error?.stack || error);
-  try {
-    await closePopup();
-  } catch {
-    // ignore
-  }
-  process.exit(1);
+  closeAndExit(1);
 });
