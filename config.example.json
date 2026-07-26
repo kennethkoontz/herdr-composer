@@ -3,7 +3,7 @@
   "ignore_dir_names": ["archived", "node_modules", ".git", "worktrees"],
   "harnesses": ["pi", "claude", "codex", "grok"],
   "defaults": {
-    "harness": "pi",
+    "harness": "grok",
     "model": {
       "pi": "google/gemini-3.1-pro-preview",
       "claude": "opus",
@@ -11,10 +11,10 @@
       "grok": "grok-4.5"
     },
     "effort": {
-      "pi": "high",
-      "claude": "high",
-      "codex": "high",
-      "grok": "high"
+      "pi": "medium",
+      "claude": "medium",
+      "codex": "medium",
+      "grok": "medium"
     },
     "create_more": false
   },

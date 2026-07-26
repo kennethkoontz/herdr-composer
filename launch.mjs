@@ -120,11 +120,10 @@ function enqueueLaunch(selection) {
 
 async function closePopupAndExit(code = 0) {
   try {
-    closePopup();
+    await closePopup();
   } catch {
     // ignore
   }
-  await sleep(30);
   process.exit(code);
 }
 
@@ -173,7 +172,7 @@ function waitEnter() {
 main().catch(async (error) => {
   console.error(error?.stack || error);
   try {
-    closePopup();
+    await closePopup();
   } catch {
     // ignore
   }
