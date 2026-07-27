@@ -57,8 +57,14 @@ Reload config (`prefix+shift+r` or `herdr server reload-config`).
   **enter** creates
 - in the prompt: **←/→**, **ctrl-b/f** move; **ctrl-a** / **home** start;
   **ctrl-e** / **end** end; **ctrl-k** kill to end; **ctrl-u** kill to start
-- **ctrl-v** pastes an image from the clipboard: it is saved to a temp PNG and
-  its path is inserted at the caret so the agent can read it (macOS)
+- in the prompt: **shift+←/→** (or **shift+home/end**) selects text; **ctrl+c**
+  copies the selection to the clipboard (plain **ctrl+c** still cancels when
+  nothing is selected)
+- mouse drag-select in the prompt (copies to the clipboard on release, same as
+  Herdr panes)
+- paste text into the prompt via the terminal paste (bracketed paste) or
+  **ctrl-v** (clipboard text; on macOS, an image is saved to a temp PNG and
+  its path is inserted instead)
 - **esc** closes
 
 Create focuses/creates the workspace, opens a fresh tab, starts the harness with
