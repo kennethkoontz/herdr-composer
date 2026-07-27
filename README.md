@@ -53,6 +53,8 @@ Reload config (`prefix+shift+r` or `herdr server reload-config`).
   effort, harness, or toggle create-more from anywhere, including the prompt.
   Plain **w** / **m** / **e** / **h** / **o** work when focus is off the prompt.
 - type anywhere to edit the prompt
+- in the prompt: **shift+enter** (or **alt+enter**) inserts a newline;
+  **enter** creates
 - in the prompt: **←/→**, **ctrl-b/f** move; **ctrl-a** / **home** start;
   **ctrl-e** / **end** end; **ctrl-k** kill to end; **ctrl-u** kill to start
 - **ctrl-v** pastes an image from the clipboard: it is saved to a temp PNG and
