@@ -53,6 +53,8 @@ Reload config (`prefix+shift+r` or `herdr server reload-config`).
   effort, harness, or toggle create-more from anywhere, including the prompt.
   Plain **w** / **m** / **e** / **h** / **o** work when focus is off the prompt.
 - type anywhere to edit the prompt
+- in the prompt: **←/→**, **ctrl-b/f** move; **ctrl-a** / **home** start;
+  **ctrl-e** / **end** end; **ctrl-k** kill to end; **ctrl-u** kill to start
 - **esc** closes
 
 Create focuses/creates the workspace, opens a fresh tab, starts the harness with
