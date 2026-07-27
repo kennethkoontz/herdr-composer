@@ -55,6 +55,8 @@ Reload config (`prefix+shift+r` or `herdr server reload-config`).
 - type anywhere to edit the prompt
 - in the prompt: **←/→**, **ctrl-b/f** move; **ctrl-a** / **home** start;
   **ctrl-e** / **end** end; **ctrl-k** kill to end; **ctrl-u** kill to start
+- **ctrl-v** pastes an image from the clipboard: it is saved to a temp PNG and
+  its path is inserted at the caret so the agent can read it (macOS)
 - **esc** closes
 
 Create focuses/creates the workspace, opens a fresh tab, starts the harness with
