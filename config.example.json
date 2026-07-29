@@ -16,6 +16,7 @@
       "codex": "medium",
       "grok": "medium"
     },
+    "worktree": true,
     "create_more": false
   },
   "models": {

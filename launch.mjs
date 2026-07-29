@@ -46,6 +46,7 @@ async function main() {
     model: "",
     effort: "",
     prompt: "",
+    worktree: config.defaults?.worktree !== false,
     createMore: !!config.defaults?.create_more,
     ...readLastState(stateDir),
   };
@@ -79,6 +80,7 @@ async function main() {
       model: selection.model,
       effort: selection.effort,
       prompt: selection.createMore ? selection.prompt : "",
+      worktree: selection.worktree,
       createMore: selection.createMore,
     };
     writeLastState(stateDir, last);

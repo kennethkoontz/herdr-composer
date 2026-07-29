@@ -49,9 +49,10 @@ Reload config (`prefix+shift+r` or `herdr server reload-config`).
 - **enter** opens a picker, or creates from the prompt/Create chip
 - In pickers: **↑↓** or **ctrl-p** / **ctrl-n** move the selection
 - **←/→** on harness cycles kinds; on the footer moves across chips
-- **⌥w** / **⌥m** / **⌥e** / **⌥h** / **⌥o** (alt + letter) open space, model,
-  effort, harness, or toggle create-more from anywhere, including the prompt.
-  Plain **w** / **m** / **e** / **h** / **o** work when focus is off the prompt.
+- **⌥w** / **⌥m** / **⌥e** / **⌥h** / **⌥t** / **⌥o** (alt + letter) open
+  space, model, effort, harness, or toggle worktree/create-more from anywhere,
+  including the prompt. Plain **w** / **m** / **e** / **h** / **t** / **o**
+  work when focus is off the prompt.
 - type anywhere to edit the prompt
 - in the prompt: **shift+enter** (or **alt+enter**) inserts a newline;
   **enter** creates
@@ -67,9 +68,12 @@ Reload config (`prefix+shift+r` or `herdr server reload-config`).
   its path is inserted instead)
 - **esc** closes
 
-Create focuses/creates the workspace, opens a fresh tab, starts the harness with
-model/effort flags in a background job (popup closes immediately), and submits
-the prompt when non-empty.
+Create makes a Git worktree from the selected space and opens it as a new Herdr
+workspace by default. The branch is derived from the prompt and given a unique
+suffix. Turn off the **worktree** chip to keep the previous behavior:
+focus/create the selected workspace and open a fresh tab there. In either mode,
+Composer starts the harness with model/effort flags in a background job (the
+popup closes immediately) and submits the prompt when non-empty.
 
 Default harnesses: `pi`, `claude`, `codex`, `grok`.
 
@@ -81,6 +85,7 @@ See `config.example.json`. Important keys:
 | --- | --- |
 | `project_roots` | Directories scanned for space paths |
 | `harnesses` | Ordered harness list in the UI |
+| `defaults.worktree` | Create a Herdr Git worktree by default (`true`) |
 | `defaults.model` / `defaults.effort` | Per-harness defaults |
 | `models.*` / `effort.*` | Picker options per harness |
 
