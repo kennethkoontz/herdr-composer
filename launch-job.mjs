@@ -36,26 +36,39 @@ async function main() {
   log(`start ${selection.harness} ${selection.model || ""}`);
   try {
     const result = await launchSelection(selection);
-    log(`ok ${result.name} ${result.pane_id}`);
+    log(
+      `ok ${result.name} ${result.pane_id}` +
+        (result.prompt_skipped ? ` prompt_skipped=${result.prompt_skipped}` : "") +
+        (result.prompt_nudged ? " prompt_nudged=1" : "") +
+        (result.prompt_stalled ? " prompt_stalled=1" : ""),
+    );
+    if (result.prompt_skipped) {
+      await notify(
+        "Composer prompt not sent",
+        result.prompt_skipped === "dialog"
+          ? `${result.name} is still waiting on a startup dialog (folder trust?). Answer it, then paste the prompt.`
+          : `${result.name} stayed blocked, so the prompt was not submitted.`,
+      );
+    }
   } catch (error) {
     log(`error ${error?.stack || error}`);
-    // Surface via herdr notification if available.
-    try {
-      const { runHerdr } = await import("./lib/herdr.mjs");
-      runHerdr(
-        [
-          "notification",
-          "show",
-          "Quick Launch failed",
-          "--body",
-          String(error?.message || error).slice(0, 200),
-        ],
-        { allowFail: true },
-      );
-    } catch {
-      // ignore
-    }
+    await notify(
+      "Quick Launch failed",
+      String(error?.message || error).slice(0, 200),
+    );
     process.exitCode = 1;
+  }
+}
+
+/** Best-effort desktop notification through herdr. */
+async function notify(title, body) {
+  try {
+    const { runHerdr } = await import("./lib/herdr.mjs");
+    runHerdr(["notification", "show", title, "--body", body], {
+      allowFail: true,
+    });
+  } catch {
+    // ignore
   }
 }
 

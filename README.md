@@ -75,6 +75,12 @@ focus/create the selected workspace and open a fresh tab there. In either mode,
 Composer starts the harness with model/effort flags in a background job (the
 popup closes immediately) and submits the prompt when non-empty.
 
+If the harness opens a first-run dialog — most often the folder-trust check in a
+brand-new worktree — Composer focuses the pane and holds the prompt until the
+dialog is answered (up to two minutes), then submits it. The prompt is never
+typed into the dialog. If the dialog is still open after that, Composer leaves
+the prompt unsent and shows a notification instead.
+
 Default harnesses: `pi`, `claude`, `codex`, `grok`.
 
 ## Config
